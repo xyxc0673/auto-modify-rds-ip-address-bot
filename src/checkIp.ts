@@ -12,7 +12,7 @@ const env = dotenv.config().parsed ?? {};
 
 async function checkIpAddress(): Promise<void> {
   const storedIp = await readIpAddressFromFile();
-  const publicIp = await getPublicIpAddress();
+  const publicIp = await getPublicIpAddress(env.IP_API_URL);
 
   if (publicIp !== storedIp) {
     const ipChangedMsg = `测试系统 IP 地址变更为：${publicIp}，正在更新 RDS 安全组白名单`;

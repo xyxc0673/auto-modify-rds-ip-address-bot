@@ -4,10 +4,9 @@ import axios from 'axios';
 
 const ipFilePath = path.join(__dirname, 'ip.txt');
 
-async function getPublicIpAddress(): Promise<string> {
-  console.log('正在从 https://api-ipv4.ip.sb/ip 获取 Public IP');
-  const url = 'https://api-ipv4.ip.sb/ip';
-  const response = await axios.get(url);
+async function getPublicIpAddress(ipApiUrl: string): Promise<string> {
+  console.log(`正在从 ${ipApiUrl} 获取 Public IP`);
+  const response = await axios.get(ipApiUrl);
   return response.data.trim();
 }
 
