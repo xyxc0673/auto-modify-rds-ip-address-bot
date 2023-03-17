@@ -1,18 +1,37 @@
 import axios, { AxiosResponse } from 'axios';
 
-function sendFeishuHook(
-  token: string,
-  content: string
-): Promise<AxiosResponse> {
-  const url = `https://open.feishu.cn/open-apis/bot/v2/hook/${token}`; // 替换为你自己的飞书机器人 hook 地址
-  const data = {
+interface FeishuData {
+  msg_type: string;
+  content: {
+    text: string;
+  };
+}
+
+function generateFeishuUrl(token: string): string {
+  return `https://open.feishu.cn/open-apis/bot/v2/hook/${token}`;
+}
+
+function createFeishuData(content: string): FeishuData {
+  return {
     msg_type: 'text',
     content: {
       text: content,
     },
   };
-
-  return axios.post(url, data);
 }
 
-export { sendFeishuHook };
+async function sendFeishuHook(
+  token: string,
+  content: string
+): Promise<AxiosResponse> {
+  const url = generateFeishuUrl(token);
+  const data = createFeishuData(content);
+
+  try {
+    return await axios.post(url, data);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export { generateFeishuUrl, createFeishuData, sendFeishuHook };
