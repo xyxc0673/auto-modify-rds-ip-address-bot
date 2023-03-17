@@ -8,6 +8,7 @@ const env = dotenv.config().parsed ?? {};
 const accessKeyId = env.ALIYUN_ACCESS_KEY_ID;
 const accessKeySecret = env.ALIYUN_ACCESS_KEY_SECRET;
 const dbInstanceId = env.ALIYUN_DB_INSTANCE_ID;
+const dbInstanceIPArrayName = env.ALIYUN_DB_INSTANCE_IP_ARRAY_NAME ?? 'default';
 
 if (!accessKeyId || !accessKeySecret || !dbInstanceId) {
   throw new Error('ALIYUN_ACCESS_KEY_ID, ALIYUN_ACCESS_KEY_SECRET, or ALIYUN_DB_INSTANCE_ID is undefined');
@@ -29,7 +30,7 @@ function createParams(ip: string, timestamp: string, signatureNonce: string): Re
     Action: 'ModifySecurityIps',
     DBInstanceId: dbInstanceId,
     SecurityIps: ip,
-    DBInstanceIPArrayName: 'update_by_robot',
+    DBInstanceIPArrayName: dbInstanceIPArrayName,
   };
 }
 
