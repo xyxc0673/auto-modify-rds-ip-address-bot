@@ -1,11 +1,11 @@
 # auto-modify-rds-ip-address-bot
 
-A bot to check if public ip has been changed and update to Aliyun's rds security ip
+A bot to check if public IP has been changed and update to Aliyun's rds security IP
 
 ## Features
 
 - Get public IP address from IP API and storing it in local
-- Modify Aliyun rds if local IP is different from public IP
+- Modify Aliyun rds's security IP if local IP is different from public IP
 - Send feishu hook to notify changes
 
 ## Development
