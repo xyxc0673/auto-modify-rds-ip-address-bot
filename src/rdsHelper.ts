@@ -5,24 +5,20 @@ import * as crypto from 'crypto';
 
 const env = dotenv.config().parsed ?? {};
 
-// 修改以下参数
 const accessKeyId = env.ALIYUN_ACCESS_KEY_ID;
 const accessKeySecret = env.ALIYUN_ACCESS_KEY_SECRET;
 const dbInstanceId = env.ALIYUN_DB_INSTANCE_ID;
+
+if (!accessKeyId || !accessKeySecret || !dbInstanceId) {
+  throw new Error('ALIYUN_ACCESS_KEY_ID, ALIYUN_ACCESS_KEY_SECRET, or ALIYUN_DB_INSTANCE_ID is undefined');
+}
 
 function generateRandomString(length: number): string {
   return crypto.randomBytes(length).toString('hex');
 }
 
-const updateWhitelist = (ip: string): Promise<any> => {
-  const securityIps = ip;
-
-  const timestamp = new Date().toISOString().substring(0, 19) + 'Z';
-
-  const signatureNonce = generateRandomString(10);
-
-  // 构造请求参数
-  const params: Record<string, string> = {
+function createParams(ip: string, timestamp: string, signatureNonce: string): Record<string, string> {
+  return {
     Format: 'JSON',
     Version: '2014-08-15',
     AccessKeyId: accessKeyId,
@@ -32,17 +28,24 @@ const updateWhitelist = (ip: string): Promise<any> => {
     SignatureNonce: signatureNonce,
     Action: 'ModifySecurityIps',
     DBInstanceId: dbInstanceId,
-    SecurityIps: securityIps,
+    SecurityIps: ip,
     DBInstanceIPArrayName: 'update_by_robot',
   };
+}
 
-  // 计算签名并添加到请求参数中;
+const updateWhitelist = async (ip: string): Promise<any> => {
+  const timestamp = new Date().toISOString().substring(0, 19) + 'Z';
+  const signatureNonce = generateRandomString(10);
+  const params = createParams(ip, timestamp, signatureNonce);
+
   params.Signature = signature.sign('GET', '/', params, accessKeySecret);
 
-  // 发送请求
-  return axios
-    .get('https://rds.aliyuncs.com/', { params: params })
-    .then((response) => response.data);
+  try {
+    const response = await axios.get('https://rds.aliyuncs.com/', { params: params });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export { updateWhitelist };
