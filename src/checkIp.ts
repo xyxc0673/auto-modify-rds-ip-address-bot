@@ -32,4 +32,11 @@ async function checkIpAddress(): Promise<void> {
   }
 }
 
-export { checkIpAddress };
+// send public ip address daily
+async function sendPublicIpAddress(): Promise<void> {
+  const publicIp = await getPublicIpAddress(env.IP_API_URL);
+  const msg = `RDS 安全组白名单 IP 更新机器人每日 IP 提醒：${publicIp}`;
+  sendFeishuHook(env.FEISHU_WEBHOOK_TOKEN, msg);
+}
+
+export { checkIpAddress, sendPublicIpAddress };
