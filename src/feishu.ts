@@ -41,4 +41,4 @@ async function sendFeishuHook(content: string): Promise<AxiosResponse> {
   return _sendFeishuHook(env.FEISHU_WEBHOOK_TOKEN, content);
 }
 
-export { generateFeishuUrl, createFeishuData, sendFeishuHook };
+export { generateFeishuUrl, createFeishuData, sendFeishuHook, _sendFeishuHook };

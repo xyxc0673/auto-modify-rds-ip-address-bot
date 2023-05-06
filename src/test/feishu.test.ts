@@ -1,6 +1,10 @@
 // Import required modules and functions for testing
 import { expect } from 'chai';
-import { sendFeishuHook, createFeishuData, generateFeishuUrl } from '../feishu';
+import {
+  _sendFeishuHook,
+  createFeishuData,
+  generateFeishuUrl,
+} from '../feishu';
 import axios, { AxiosError } from 'axios';
 import sinon from 'sinon';
 
@@ -27,7 +31,7 @@ describe('Feishu Functions', () => {
     expect(createFeishuData(content)).to.deep.equal(expectedData);
   });
 
-  it('sendFeishuHook should send a request to the correct URL with correct data', async () => {
+  it('_sendFeishuHook should send a request to the correct URL with correct data', async () => {
     const token = 'testToken';
     const content = 'testContent';
     const url = generateFeishuUrl(token);
@@ -35,12 +39,12 @@ describe('Feishu Functions', () => {
 
     const axiosPostStub = sinon.stub(axios, 'post').resolves({ status: 200 });
 
-    await sendFeishuHook(token, content);
+    await _sendFeishuHook(token, content);
 
     expect(axiosPostStub.calledOnceWith(url, data)).to.be.true;
   });
 
-  it('sendFeishuHook should throw an error if the request fails', async () => {
+  it('_sendFeishuHook should throw an error if the request fails', async () => {
     const token = 'testToken';
     const content = 'testContent';
     const errorMessage = 'Request failed';
@@ -48,7 +52,7 @@ describe('Feishu Functions', () => {
     sinon.stub(axios, 'post').rejects(new Error(errorMessage));
 
     try {
-      await sendFeishuHook(token, content);
+      await _sendFeishuHook(token, content);
     } catch (error) {
       if (error instanceof AxiosError) {
         expect(error.message).to.equal(errorMessage);
