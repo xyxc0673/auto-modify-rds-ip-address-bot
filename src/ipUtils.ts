@@ -5,9 +5,14 @@ import axios from 'axios';
 const ipFilePath = path.join(__dirname, 'ip.txt');
 
 async function getPublicIpAddress(ipApiUrl: string): Promise<string> {
-  console.log(`正在从 ${ipApiUrl} 获取 Public IP`);
-  const response = await axios.get(ipApiUrl);
-  return response.data.trim();
+  try {
+    console.log(`正在从 ${ipApiUrl} 获取 Public IP`);
+    const response = await axios.get(ipApiUrl);
+    return response.data.trim();
+  } catch (error) {
+    console.error('Error getting public IP address:', error);
+    throw error;
+  }
 }
 
 function saveIpAddressToFile(ipAddress: string): void {
