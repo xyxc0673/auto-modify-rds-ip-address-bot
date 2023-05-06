@@ -1,4 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
+import dotenv from 'dotenv';
+
+const env = dotenv.config().parsed ?? {};
 
 interface FeishuData {
   msg_type: string;
@@ -20,7 +23,7 @@ function createFeishuData(content: string): FeishuData {
   };
 }
 
-async function sendFeishuHook(
+async function _sendFeishuHook(
   token: string,
   content: string
 ): Promise<AxiosResponse> {
@@ -32,6 +35,10 @@ async function sendFeishuHook(
   } catch (error) {
     throw error;
   }
+}
+
+async function sendFeishuHook(content: string): Promise<AxiosResponse> {
+  return _sendFeishuHook(env.FEISHU_WEBHOOK_TOKEN, content);
 }
 
 export { generateFeishuUrl, createFeishuData, sendFeishuHook };
